@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import svc from "../service";
+  import svc from "../service.js";
 
   let searchTerm = "";
   let modalCloseButton;

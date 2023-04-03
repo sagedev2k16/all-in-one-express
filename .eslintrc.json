@@ -7,15 +7,6 @@
         // Only ESLint 6.2.0 and later support ES2020.
         "ecmaVersion": "latest"
     },
-    "plugins": [
-        "svelte3"
-    ],
-    "overrides": [
-        {
-            "files": "*.svelte",
-            "processor": "svelte3/svelte3"
-        }
-    ],
     "env": {
         "node": true,
         "browser": true
