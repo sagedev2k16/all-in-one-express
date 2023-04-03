@@ -13,7 +13,8 @@
   let newUser = {
     id: 0,
     userName: "",
-    role: ""
+    role: "",
+    city: ""
   };
 
   onMount(() => {
@@ -37,13 +38,13 @@
   }
 
   const createOrUpdateUser = async () => {
-    if(!newUser.userName || !newUser.role) {
+    if(!newUser.userName || !newUser.role || !newUser.city) {
       alert("Provide mandatory values");
       return;
     }
 
     if(cuMode === 'c') {
-      let data = await svc.createUser(newUser.role, newUser.userName);
+      let data = await svc.createUser(newUser.role, newUser.userName, newUser.city);
       await getAll();
       modalCloseButton.click();
       console.log(data);
@@ -51,8 +52,14 @@
       newUser.id = 0;
       newUser.role = "";
       newUser.userName = "";
+      newUser.city = "";
     } else if(cuMode === 'u') {
-      let data = await svc.updateUser({userName: newUser.userName, empId: newUser.id, role: newUser.role});
+      let data = await svc.updateUser({
+        userName: newUser.userName, 
+        empId: newUser.id, 
+        role: newUser.role, 
+        city: newUser.city
+      });
       console.log(data);
 
       await getAll();
@@ -62,6 +69,7 @@
       newUser.id = 0;
       newUser.role = "";
       newUser.userName = "";
+      newUser.city = "";
     }
   }
 
@@ -71,6 +79,7 @@
     newUser.id = user.empId;
     newUser.role = user.role;
     newUser.userName = user.userName;
+    newUser.city = user.city;
     openDialogButton.click();
   }
 
@@ -105,6 +114,7 @@
       <th>Emp. Id</th>
       <th>Name</th>
       <th>Role</th>
+      <th>City</th>
       <th>Actions</th>
     </tr>
   </thead>
@@ -114,6 +124,7 @@
         <td>{user.empId}</td>
         <td>{user.userName}</td>
         <td>{user.role}</td>
+        <td>{user.city ? user.city : ""}</td>
         <td width="20%">
           <button class="btn btn-warning" on:click={() => updateExistingUser(user)}>Update</button>
           <button class="btn btn-danger" on:click={() => deleteExistingUser(user.empId)}>Delete</button>
@@ -146,6 +157,10 @@
               <option value="employee">Employee</option>
               <option value="manager">Manager</option>
             </select>
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">City</label>
+            <input type="text" class="form-control" id="recipient-name" bind:value={newUser.city}>
           </div>
         </form>
       </div>

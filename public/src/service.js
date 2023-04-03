@@ -1,7 +1,7 @@
 const apiHost = import.meta.env.VITE_API_HOST;
 
 const getAllUsers = async () => {
-    let resp = await fetch(apiHost + "/users", {
+    let resp = await fetch(apiHost + "/db/users", {
         method: 'get',
     });
 
@@ -11,7 +11,7 @@ const getAllUsers = async () => {
 }
 
 const getUserById = async (id) => {
-    let resp = await fetch(apiHost + `/userById/${id}`, {
+    let resp = await fetch(apiHost + `/db/userById/${id}`, {
         method: 'get',
     });
 
@@ -21,7 +21,7 @@ const getUserById = async (id) => {
 }
 
 const getUsersByRole = async (role) => {
-    let resp = await fetch(apiHost + `/usersByRole/${role}`, {
+    let resp = await fetch(apiHost + `/db/usersByRole/${role}`, {
         method: 'get',
     });
 
@@ -30,13 +30,13 @@ const getUsersByRole = async (role) => {
     return respJson;
 }
 
-const createUser = async (type, userName) => {
+const createUser = async (type, userName, city) => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    let resp = await fetch(apiHost + `/create/${type}`, {
+    let resp = await fetch(apiHost + `/db/create/${type}`, {
         method: 'post',
-        body: JSON.stringify({userName}),
+        body: JSON.stringify({userName, city}),
         headers: myHeaders
     });
 
@@ -49,7 +49,7 @@ const updateUser = async(userObj) => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    let resp = await fetch(apiHost + `/update`, {
+    let resp = await fetch(apiHost + `/db/update`, {
         method: 'put',
         body: JSON.stringify(userObj),
         headers: myHeaders
@@ -61,7 +61,7 @@ const updateUser = async(userObj) => {
 }
 
 const deleteUser = async(id) => {
-    let resp = await fetch(apiHost + `/delete/${id}`, {
+    let resp = await fetch(apiHost + `/db/delete/${id}`, {
         method: 'delete'
     });
 
