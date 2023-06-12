@@ -5,7 +5,8 @@ import {
     getRecordsByRole, 
     insertRecord, 
     updateRecord, 
-    deleteRecord 
+    deleteRecord,
+    getWeatherForCity
 } from "./utils.js";
 const router = Express.Router();
 
@@ -14,6 +15,46 @@ const tableName = 'users';
 // Get all DB users
 router.get("/users", async (req, res) => {
     let dbUsers = await getAllRecords(tableName);
+    res.send(dbUsers);
+});
+
+// Get all DB users
+router.get("/usersWithWeather", async (req, res) => {
+    let dbUsers = await getAllRecords(tableName);
+    let cityNames = [];
+
+    for(let i = 0; i < dbUsers.length; i++) {
+        if(dbUsers[i].city) {
+            if(!cityNames.includes(dbUsers[i].city.toLowerCase())) {
+                cityNames.push(dbUsers[i].city.toLowerCase())
+            }
+        }
+    }
+
+    let cityWeatherData = await Promise.all(cityNames.map((v) => getWeatherForCity(v)))
+    let cityWeatherDataObject = {};
+
+    for(let i = 0; i < cityWeatherData.length; i++) {
+        if(!cityWeatherDataObject[cityWeatherData[i].name.toLowerCase()]) {
+            cityWeatherDataObject[cityWeatherData[i].name.toLowerCase()] = {
+                temp: cityWeatherData[i].main.temp,
+                laf: cityWeatherData[i].weather && cityWeatherData[i].weather.length 
+                    ? cityWeatherData[i].weather[0].main : ""
+            }
+        }
+    }
+
+    for(let i = 0; i < dbUsers.length; i++) {
+        if(dbUsers[i].city) {
+            dbUsers[i].weather = cityWeatherDataObject[dbUsers[i].city.toLowerCase()];
+        } else {
+            dbUsers[i].weather = {
+                temp: "",
+                laf: ""
+            }
+        }
+    }
+    
     res.send(dbUsers);
 });
 

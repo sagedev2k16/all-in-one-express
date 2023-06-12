@@ -1,6 +1,7 @@
 import knex from "knex";
 
 import ModelUser from "./model/user.model.js";
+import axios from "axios";
 
 let db;
 
@@ -81,6 +82,17 @@ const deleteRecord = async (tableName, id) => {
     return deleteResult;
 }
 
+const getWeatherForCity = async (city) => {
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=4df4f5201399fc8cb1729867d92110cf&units=metric`;
+    const data = await axios.get(url, {
+        headers: {
+            Accept: "application/json"
+        }
+    });
+
+    return data.data;
+}
+
 export {
     initDb,
     insertRecord,
@@ -89,5 +101,6 @@ export {
     getRecordById,
     getRecordsByRole,
     updateRecord,
-    deleteRecord
+    deleteRecord,
+    getWeatherForCity
 };
