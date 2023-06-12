@@ -1,0 +1,9 @@
+---
+applications:
+- name: sage-dev-aio
+  buildpack: nodejs_buildpack
+  memory: 144M
+  disk_quota: 300M
+  path: app
+  services:
+    - xsuaa-dev

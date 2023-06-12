@@ -1,0 +1,17 @@
+---
+applications:
+# AppRouter
+- name: sage-dev-aio-server
+  path: approuter
+  buildpack: nodejs_buildpack
+  memory: 128M
+  disk_quota: 512M
+  env:
+    destinations: >
+     [
+       {"name": "sage-dev-aio-destination",
+        "url": "https://sage-dev-aio.cfapps.us10-001.hana.ondemand.com",
+        "forwardAuthToken": true}
+     ]
+  services:
+    - xsuaa-dev

@@ -1,0 +1,15 @@
+{
+    "routes": [{
+      "source": "^/app",
+      "target": "/",
+      "destination": "sage-dev-aio-destination"
+    },{
+      "source": "^/assets/(.*)",
+      "target": "/assets/$1",
+      "destination": "sage-dev-aio-destination"
+    },{
+      "source": "^/db/(.*)",
+      "target": "/db/$1",
+      "destination": "sage-dev-aio-destination"
+    }]
+}
