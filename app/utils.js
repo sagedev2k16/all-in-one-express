@@ -83,7 +83,7 @@ const deleteRecord = async (tableName, id) => {
 }
 
 const getWeatherForCity = async (city) => {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=4df4f5201399fc8cb1729867d92110cf&units=metric`;
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${proces.env.OPEN_WEATHER_MAP_API_KEY}&units=metric`;
     const data = await axios.get(url, {
         headers: {
             Accept: "application/json"
@@ -91,6 +91,32 @@ const getWeatherForCity = async (city) => {
     });
 
     return data.data;
+}
+
+export function checkReadScope(req, res, next) {
+    if(process.env.NODE_ENV === "production") {
+        if(req.authInfo.checkLocalScope("read")) {
+            return next();
+        } else {
+            console.log("Missing read authorization");
+            res.status(403).end("Missing read authorization");
+        }
+    } else {
+        return next();
+    }
+}
+
+export function checkPerformScope(req, res, next) {
+    if(process.env.NODE_ENV === "production") {
+        if(req.authInfo.checkLocalScope("perform")) {
+            return next();
+        } else {
+            console.log("Missing perform authorization");
+            res.status(403).end("Missing perform authorization");
+        }
+    } else {
+        return next();
+    }
 }
 
 export {

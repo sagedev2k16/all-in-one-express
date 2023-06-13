@@ -7,6 +7,7 @@ let users = [
     {userName: "Luke", empId: 2, role: "manager"},
     {userName: "Jane", empId: 3, role: "manager"},
     {userName: "Leia", empId: 4, role: "employee"},
+    {userName: "Han", empId: 5, role: "employee"}
 ];
 
 // Read all users

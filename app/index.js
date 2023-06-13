@@ -3,14 +3,21 @@ import path from 'path';
 import cors from 'cors';
 import helmet from 'helmet';
 import axios from 'axios';
+import passport from "passport";
+import { JWTStrategy } from "@sap/xssec";
+import jwt_decode from 'jwt-decode';
+import { getServices } from "@sap/xsenv";
 
 import { initDb } from "./utils.js";
+import { checkPerformScope, checkReadScope } from "./utils.js";
 
 await initDb();
 
 // Express routers
 import localRoutes from "./local-routes.js";
 import dbRoutes from "./db-routes.js";
+
+let season = process.env.SEASON || "";
 
 // Create an express app
 const app = Express();
@@ -50,10 +57,51 @@ app.get("/apiData", async (req, res) => {
     }
 });
 
+app.get("/seasons", (req, res) => {
+    if(season) {
+        switch (season) {
+            case "summer":
+                res.send("It is too hot. Turn on the AC.");
+                break;
+
+            case "rains":
+                res.send("It is raining. Get an umbrella.");
+                break;
+
+            case "winter":
+                res.send("It is too cold outside. Turn on the heater.");
+                break;
+            default:
+                res.send("Provide a SEASON env var");
+                break;
+        }
+    } else {
+        res.send("Provide a SEASON env var");
+    }
+});
+
+if(process.env.NODE_ENV === "production") { // this checks if we are running on BTP
+    // ----- authentication code start -----
+    passport.use(new JWTStrategy(getServices({uaa: {tag: "xsuaa"}}).uaa));
+
+    app.use(passport.initialize());
+    app.use(passport.authenticate('JWT', {session: false}));
+    // ----- authentication code end -----
+}
+
 // Express middleware
 app.use("*", (req, res, next) => {
     console.log("Got new request", req.method, req.originalUrl);
     next();
+});
+
+app.get("/auth", (req, res) => {
+    // console.log(JSON.stringify(req));
+    res.send({
+        user: req.user,
+        appToken: req.authInfo.getAppToken(),
+        tokenDecode: jwt_decode(req.authInfo.getAppToken())
+    });
 });
 
 // Simple REST API calls
@@ -61,12 +109,12 @@ app.get("/", (req, res) => {
     res.send("Hello from server");
 });
 
-app.get("/date", (req, res) => {
+app.get("/date", checkReadScope, (req, res) => {
     res.send("Current time is: " + new Date());
 });
 
 app.use("/local", localRoutes);
-app.use("/db", dbRoutes);
+app.use("/db", checkPerformScope, dbRoutes);
 
 app.listen(PORT, () => {
     console.log("Server listening on port - " + PORT);
