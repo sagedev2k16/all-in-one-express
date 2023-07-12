@@ -16,6 +16,13 @@ router.get("/users", (req, res) => {
     res.send(users);
 });
 
+router.get("/users/:id/:name", (req, res) => {
+    let id = req.params.id;
+    let name = req.params.name;
+    console.log(`You got id=${id} and name=${name}`);
+    res.send(`You got id=${id} and name=${name}`);
+});
+
 // Read a user with id
 router.get("/userById/:id", (req, res) => {
     console.log("Getting user with id", req.params.id);

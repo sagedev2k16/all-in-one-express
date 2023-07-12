@@ -26,7 +26,11 @@ const app = Express();
 app.use(Express.json());
 
 // Use public/dist folder to serve static content
-app.use(Express.static(path.join("public", "dist")));
+app.use(
+    Express.static( // Tells express where to serve the static files from
+        path.join("public", "dist") // Use path module to create a path to the static files folder
+    )
+);
 
 // Allow cors requests
 app.use(cors());
@@ -55,6 +59,10 @@ app.get("/apiData", async (req, res) => {
             error: e
         });
     }
+});
+
+app.get("/env", (req, res) => {
+    res.send(process.env);
 });
 
 app.get("/seasons", (req, res) => {
