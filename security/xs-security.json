@@ -1,5 +1,5 @@
 {
-	"xsappname": "sage-dev-aio",
+	"xsappname": "sage-dev-aio-1",
 	"tenant-mode": "dedicated",
 	"scopes": [
 		{

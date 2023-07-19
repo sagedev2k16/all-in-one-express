@@ -1,6 +1,6 @@
 ---
 applications:
-- name: sage-dev-aio
+- name: sage-dev-aio-1
   buildpack: nodejs_buildpack
   memory: 144M
   disk_quota: 300M
